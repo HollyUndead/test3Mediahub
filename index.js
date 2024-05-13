@@ -9,7 +9,11 @@ const logStream = fs.createWriteStream("test_results.log", { flags: "a" });
 
 // mocha.addFile("./scripts/library.js");
 // mocha.addFile("./scripts/filiei.js");
-mocha.addFile('./scripts/playlist.js')
+// mocha.addFile('./scripts/playlist.js')
+// mocha.addFile("./scripts/report.js");
+// mocha.addFile("./scripts/owners.js");
+// mocha.addFile("./scripts/fili_group.js");
+mocha.addFile("./scripts/rules.js");
 
 const runner = mocha.run(function (failures) {
   logStream.write(`———————————————\n`);

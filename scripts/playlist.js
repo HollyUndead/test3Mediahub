@@ -86,54 +86,54 @@ describe("Библиотека", function () {
     assert.equal("http://192.168.16.14:6521/app/playlists", url);
   });
 
-  //   it("Создать плейлист", async function () {
-  //     await helper.clickByXpath(
-  //       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/div/p-button[2]",
-  //       driver
-  //     );
+  it("Создать плейлист", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/div/p-button[2]",
+      driver
+    );
 
-  //     await driver.sleep(900);
+    await driver.sleep(900);
 
-  //     await helper.sendKeysByXpath(
-  //       "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[1]/span/input",
-  //       driver,
-  //       "Auto test playlist"
-  //     );
-  //     await helper.sendKeysByXpath(
-  //       "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[2]/span/textarea",
-  //       driver,
-  //       "Some text for testin purpose"
-  //     );
-  //     await helper.sendKeysByXpath(
-  //       "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[3]/app-chips/div/mat-chip-list/div/input",
-  //       driver,
-  //       "test"
-  //     );
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[1]/span/input",
+      driver,
+      "Auto test playlist"
+    );
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[2]/span/textarea",
+      driver,
+      "Some text for testin purpose"
+    );
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/div/div[3]/app-chips/div/mat-chip-list/div/input",
+      driver,
+      "test"
+    );
 
-  //     await helper.clickByXpath(
-  //       "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/p-footer/div/div/p-button/button",
-  //       driver
-  //     );
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-play-list-create-modal/p-footer/div/div/p-button/button",
+      driver
+    );
 
-  //     await driver.sleep(900);
+    await driver.sleep(900);
 
-  //     let trList = await helper.getTrFromTbodyByXpath(
-  //       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
-  //       driver
-  //     );
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
 
-  //     let result = false;
+    let result = false;
 
-  //     for (let q in trList) {
-  //       let text = await trList[q].getText();
-  //       if (text.includes("Auto test playlist")) {
-  //         result = true;
-  //         break;
-  //       }
-  //     }
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Auto test playlist")) {
+        result = true;
+        break;
+      }
+    }
 
-  //     assert.isTrue(result);
-  //   });
+    assert.isTrue(result);
+  });
 
   it("Изменить плейлист(название)", async function () {
     let trList = await helper.getTrFromTbodyByXpath(
@@ -180,5 +180,69 @@ describe("Библиотека", function () {
     }
 
     assert.isTrue(result);
+  });
+
+  it("Добавление и удаление видео в плейлист", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/div/p-button[4]",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-added-records-modal/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul/p-treenode[4]/li",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-added-records-modal/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody/tr[1]",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-added-records-modal/p-footer/div/button",
+      driver
+    );
+    await driver.sleep(900);
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[3]/div/div/app-playlist-records-view/app-table/div/p-table/div/div/table/tbody/tr/td[6]/div/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[3]/div/div/app-playlist-records-view/p-confirmdialog/div/div/div[3]/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[3]/div/div/app-playlist-records-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    assert.isEmpty(trList);
+  });
+
+  it("Удаление плейлиста", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/div/p-button[5]",
+      driver
+    );
+
+    await driver.sleep(500);
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Auto test playlist new")) {
+        assert.isTrue(false);
+      }
+    }
+
+    assert.isTrue(true);
   });
 });
