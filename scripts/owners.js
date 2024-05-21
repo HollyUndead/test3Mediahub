@@ -5,7 +5,7 @@ const assert = require("chai").assert;
 const Helper = require("../helpers/helper");
 const fs = require("fs");
 
-describe("Библиотека", function () {
+describe("Владельцы", function () {
   let driver, ownerCreated;
   By = webdriver.By;
   until = webdriver.until;
@@ -66,6 +66,13 @@ describe("Библиотека", function () {
     await helper.clickByXpath(
       "/html/body/app-root/app-login/section/div[1]/div/div/div[4]/button",
       driver
+    );
+
+    await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath("/html/body/app-root/app-app-view/div/div[2]/div[1]")
+      ),
+      5000
     );
 
     await driver.wait(

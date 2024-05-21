@@ -5,7 +5,7 @@ const assert = require("chai").assert;
 const Helper = require("../helpers/helper");
 const fs = require("fs");
 
-describe("Библиотека", function () {
+describe("Филии", function () {
   let driver, myFili;
   By = webdriver.By;
   until = webdriver.until;
@@ -67,8 +67,16 @@ describe("Библиотека", function () {
       "/html/body/app-root/app-login/section/div[1]/div/div/div[4]/button",
       driver
     );
+
+    await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath("/html/body/app-root/app-app-view/div/div[2]/div[1]")
+      ),
+      5000
+    );
+
     let title = await driver.getTitle();
-    console.log(title);
+
     await driver.sleep(900);
     assert.equal(title, "Mediafront", "Не открыло страницу");
   });
@@ -284,6 +292,260 @@ describe("Библиотека", function () {
     );
 
     assert.isTrue(true);
+  });
+
+  it("Проврка фильтров", async function () {
+    let res = [
+      { name: "Ідентифікатор", state: true },
+      { name: "Назва", state: true },
+      { name: "Місто", state: true },
+      { name: "Адерса", state: true },
+      { name: "Групи", state: true },
+      { name: "Дата створення", state: true },
+    ];
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[9]",
+      driver
+    );
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[1]/div/input",
+      driver,
+      "123456"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("123456") === false) {
+        res[0].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    await driver.sleep(900);
+    ////////////////////////////
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[2]/div/input",
+      driver,
+      "Alex auto test"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Alex auto test") === false) {
+        res[1].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    await driver.sleep(900);
+    ////////////////////////
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[4]/div/input",
+      driver,
+      "Smallwill"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Smallwill") === false) {
+        res[2].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    await driver.sleep(900);
+    ////////////////////////
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[5]/div/input",
+      driver,
+      "221B Baker Street"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+    await driver.sleep(1200);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("221B Baker Street") === false) {
+        res[3].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    await driver.sleep(900);
+    ////////////////////////
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[3]/span/p-autocomplete/span/input",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[3]/span/p-autocomplete/span/div/ul/li[1]",
+      driver
+    );
+    await driver.sleep(900);
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Східний регіон") === false) {
+        res[4].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    await driver.sleep(900);
+    /////////////////////////
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[6]/div/p-calendar",
+      driver
+    );
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[6]/div/p-calendar/span/div/div/div/div[2]/table/tbody",
+      driver
+    );
+
+    outter: for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      for (let t in tdList) {
+        let classList = await tdList[t].getAttribute("class");
+        if (classList.includes("p-datepicker-today")) {
+          await tdList[t].click();
+          await driver.sleep(200);
+          await tdList[t].click();
+          await driver.sleep(800);
+          break outter;
+        }
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+    let date = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-branch-filter-form/div[6]/div/p-calendar/span/input",
+      driver
+    );
+
+    let text1 = await date.getAttribute("value");
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes(text1.slice(0, 10)) === false) {
+        res[5].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    /////////////////////
+
+    await driver.sleep(900);
+
+    let result = res.every((el) => el.state === true);
+
+    let ar,
+      erStr = "Фильтры провалившие проверку:";
+
+    if (result === false) {
+      ar = res.filter((el) => el.state === false);
+    }
+
+    if (ar !== undefined) {
+      ar.forEach((el, index) => {
+        erStr += ` ${el.name}`;
+        if (index !== ar.length - 1) {
+          erStr += ",";
+        }
+      });
+    }
+
+    assert.isTrue(result, erStr);
   });
 
   it("Скопировать филию", async function () {

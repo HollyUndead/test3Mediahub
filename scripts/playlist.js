@@ -5,7 +5,7 @@ const assert = require("chai").assert;
 const Helper = require("../helpers/helper");
 const fs = require("fs");
 
-describe("Библиотека", function () {
+describe("Плейлист", function () {
   let driver, myFili;
   By = webdriver.By;
   until = webdriver.until;
@@ -67,8 +67,15 @@ describe("Библиотека", function () {
       "/html/body/app-root/app-login/section/div[1]/div/div/div[4]/button",
       driver
     );
+
+    await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath("/html/body/app-root/app-app-view/div/div[2]/div[1]")
+      ),
+      5000
+    );
     let title = await driver.getTitle();
-    console.log(title);
+
     await driver.sleep(900);
     assert.equal(title, "Mediafront", "Не открыло страницу");
   });
@@ -180,6 +187,153 @@ describe("Библиотека", function () {
     }
 
     assert.isTrue(result);
+  });
+
+  it("Фильтры", async function () {
+    let res = [
+      { name: "Назва", state: true },
+      { name: "Опис", state: true },
+    ];
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/div/p-button[8]",
+      driver
+    );
+
+    let reference = false;
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Auto test playlist new") === true) {
+        reference = true;
+        break;
+      }
+    }
+
+    await driver.sleep(900);
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-playlist-filter/div[1]/div/input",
+      driver,
+      "Auto test playlist new"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    if (reference === true) {
+      trList = await helper.getTrFromTbodyByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+        driver
+      );
+
+      if (trList.length === 0) {
+        res[0].state = false;
+      }
+
+      for (let q in trList) {
+        let text = await trList[q].getText();
+        if (text.includes("Auto test playlist new") === false) {
+          res[0].state = false;
+        }
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    ///////////////////////
+
+    await driver.sleep(900);
+
+    reference = false;
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Some text for testin purpose") === true) {
+        reference = true;
+        break;
+      }
+    }
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[2]/div/p-scrollpanel/app-playlist-filter/div[2]/div/input",
+      driver,
+      "Some text for testin purpose"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    if (reference === true) {
+      trList = await helper.getTrFromTbodyByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody",
+        driver
+      );
+
+      if (trList.length === 0) {
+        res[1].state = false;
+      }
+      for (let q in trList) {
+        let text = await trList[q].getText();
+        if (text.includes("Some text for testin purpose") === false) {
+          res[1].state = false;
+        }
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    ///////////////////////
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/p-sidebar/div/div[1]/button",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let result = res.every((el) => el.state === true);
+
+    let ar,
+      erStr = "Фильтры провалившие проверку:";
+
+    if (result === false) {
+      ar = res.filter((el) => el.state === false);
+    }
+
+    if (ar !== undefined) {
+      ar.forEach((el, index) => {
+        erStr += ` ${el.name}`;
+        if (index !== ar.length - 1) {
+          erStr += ",";
+        }
+      });
+    }
+
+    assert.isTrue(result, erStr);
   });
 
   it("Добавление и удаление видео в плейлист", async function () {

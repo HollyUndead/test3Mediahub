@@ -66,6 +66,13 @@ describe("Библиотека", function () {
       "/html/body/app-root/app-login/section/div[1]/div/div/div[4]/button",
       driver
     );
+
+    await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath("/html/body/app-root/app-app-view/div/div[2]/div[1]")
+      ),
+      5000
+    );
     let title = await driver.getTitle();
 
     await driver.sleep(900);
@@ -99,10 +106,28 @@ describe("Библиотека", function () {
 
     await driver.sleep(900);
 
-    let ul = await helper.elementByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
-      driver
-    );
+    let ul;
+
+    try {
+      ul = await helper.elementByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
+        driver
+      );
+    } catch (err) {}
+
+    if (ul === undefined) {
+      await helper.clickByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/div/button",
+        driver
+      );
+    }
+
+    try {
+      ul = await helper.elementByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
+        driver
+      );
+    } catch (err) {}
 
     let text = await ul.getText();
 
@@ -112,6 +137,7 @@ describe("Библиотека", function () {
   });
 
   it("Редактировать папку", async function () {
+    await driver.sleep(900);
     let ul = await helper.elementByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
       driver
@@ -167,10 +193,20 @@ describe("Библиотека", function () {
   });
 
   it("Скопировать файл в папку", async function () {
-    await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul/p-treenode[2]/li",
+    let ul = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
       driver
     );
+
+    let lilist = await helper.elementsByTagName("li", ul);
+
+    for (let q in lilist) {
+      let text = await lilist[q].getText();
+      if (text.includes("Audio")) {
+        lilist[q].click();
+        break;
+      }
+    }
 
     await driver.sleep(900);
     let file = await helper.elementByXpath(
@@ -188,12 +224,12 @@ describe("Библиотека", function () {
     );
 
     await driver.sleep(900);
-    let ul = await helper.elementByXpath(
+    ul = await helper.elementByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
       driver
     );
 
-    let lilist = await helper.elementsByTagName("li", ul);
+    lilist = await helper.elementsByTagName("li", ul);
 
     for (let q in lilist) {
       let text = await lilist[q].getText();
@@ -316,6 +352,28 @@ describe("Библиотека", function () {
   });
 
   it("Филтры", async function () {
+    ul = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
+      driver
+    );
+
+    let lilist = await helper.elementsByTagName("li", ul);
+
+    for (let q in lilist) {
+      let text = await lilist[q].getText();
+      if (text.includes("Video")) {
+        lilist[q].click();
+        break;
+      }
+    }
+
+    let res = [
+      { name: "КАТЕГОРІЇ", state: true },
+      { name: "Автор", state: true },
+      { name: "Дата завантаження", state: true },
+      { name: "Теги", state: true },
+    ];
+
     await helper.clickByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/div/p-button[12]",
       driver
@@ -354,23 +412,177 @@ describe("Библиотека", function () {
 
     lilist = await helper.elementsByTagName("li", ul);
 
-    let result = true;
-
     for (let q in lilist) {
       let text = await lilist[q].getText();
 
-      if (text.includes("Video")) {
-        result = false;
+      if (text.includes("Video") === true) {
+        res[0].state = false;
         break;
       }
     }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    checkboxs = await helper.elementsByTagName("p-checkbox", driver);
+
+    for (let q in checkboxs) {
+      let text = await checkboxs[q].getText();
+      if (text.includes("Video")) {
+        await checkboxs[q].click();
+      }
+    }
+    ////////////////////
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[2]/div/p-scrollpanel/app-media-filter-sidebar/div[2]/div/input",
+      driver,
+      "admin"
+    );
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("admin") === false) {
+        res[1].state = false;
+        break;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+    ////////////////////
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[2]/div/p-scrollpanel/app-media-filter-sidebar/div[3]/div/p-calendar",
+      driver
+    );
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[2]/div/p-scrollpanel/app-media-filter-sidebar/div[3]/div/p-calendar/span/div/div/div/div[2]/table/tbody",
+      driver
+    );
+
+    outter: for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      for (let t in tdList) {
+        let classList = await tdList[t].getAttribute("class");
+        if (classList.includes("p-datepicker-today")) {
+          await tdList[t].click();
+          await driver.sleep(200);
+          await tdList[t].click();
+          await driver.sleep(800);
+          break outter;
+        }
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+    await driver.sleep(900);
+    let date = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[2]/div/p-scrollpanel/app-media-filter-sidebar/div[3]/div/p-calendar/span/input",
+      driver
+    );
+
+    let text1 = await date.getAttribute("value");
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes(text1.slice(0, 10)) === false) {
+        res[2].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    ////////////////////
+
+    await helper.sendKeysByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[2]/div/p-scrollpanel/app-media-filter-sidebar/div[4]/app-chips/div/mat-chip-list/div/input",
+      driver,
+      "Демо"
+    );
+
+    await driver.sleep(900);
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[2]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let text = await trList[q].getText();
+      if (text.includes("Демо") === false) {
+        res[3].state = false;
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[3]/div/div/button[1]",
+      driver
+    );
+
+    ////////////////////
 
     await helper.clickByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/p-sidebar/div/div[1]/button",
       driver
     );
 
-    assert.isTrue(result);
+    await driver.sleep(900);
+
+    let result = res.every((el) => el.state === true);
+
+    let ar,
+      erStr = "Фильтры провалившие проверку:";
+
+    if (result === false) {
+      ar = res.filter((el) => el.state === false);
+    }
+
+    if (ar !== undefined) {
+      ar.forEach((el, index) => {
+        erStr += ` ${el.name}`;
+        if (index !== ar.length - 1) {
+          erStr += ",";
+        }
+      });
+    }
+
+    assert.isTrue(result, erStr);
   });
 
   it("Смена вида отображения", async function () {
