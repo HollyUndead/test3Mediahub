@@ -212,7 +212,13 @@ async function checkSort(theadXpath, tbodyXpath, driver, helper) {
 
   let thList = await helper.elementsByTagName("th", thead);
 
-  let trlistStart = await helper.getTrFromTbodyByXpath(tbodyXpath, driver);
+  let trLIstStr = await helper.getTrFromTbodyByXpath(tbodyXpath, driver);
+  let trlistStart = [];
+
+  for (let q in trLIstStr) {
+    let text = await trLIstStr[q].getText();
+    trlistStart.push(text);
+  }
   let finalRes = [];
 
   for (let q in thList) {
@@ -267,8 +273,6 @@ async function checkSort(theadXpath, tbodyXpath, driver, helper) {
         result,
         msg,
       });
-
-      await driver.navigation().refresh();
     }
   }
 
