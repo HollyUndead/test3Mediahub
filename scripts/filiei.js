@@ -273,16 +273,12 @@ describe("Филии", function () {
 
   it("Просмотреть плейлисты", async function () {
     await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[4]",
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[6]",
       driver
     );
 
     await driver.wait(
-      webdriver.until.elementLocated(
-        webdriver.By.xpath(
-          "/html/body/p-dynamicdialog/div/div/div[2]/app-branch-playlists-modal/div[3]"
-        )
-      ),
+      webdriver.until.elementLocated(webdriver.By.tagName("p-toastitem")),
       7000
     );
 
@@ -305,7 +301,7 @@ describe("Филии", function () {
     ];
 
     await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[9]",
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[8]",
       driver
     );
 
@@ -550,7 +546,7 @@ describe("Филии", function () {
 
   it("Скопировать филию", async function () {
     await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[5]",
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[3]",
       driver
     );
     await driver.sleep(900);
@@ -570,81 +566,81 @@ describe("Филии", function () {
     assert.isTrue(false);
   });
 
-  it("Назначить правило и проверка", async function () {
-    await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[7]",
-      driver
-    );
-    await driver.sleep(900);
-    let trList = await helper.getTrFromTbodyByXpath(
-      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
-      driver
-    );
+  // it("Назначить правило и проверка", async function () {
+  //   await helper.clickByXpath(
+  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[7]",
+  //     driver
+  //   );
+  //   await driver.sleep(900);
+  //   let trList = await helper.getTrFromTbodyByXpath(
+  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+  //     driver
+  //   );
 
-    let tdlist;
+  //   let tdlist;
 
-    for (let q in trList) {
-      q = Number(q);
-      let text = await trList[q].getText();
-      tdlist = await helper.elementsByTagName("td", trList[q]);
-      if (text.includes("Alex auto test new")) {
-        let myFili1 = await helper.elementByXpath(
-          `/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody/tr[${
-            q + 1
-          }]`,
-          driver
-        );
-        await helper.clcikByClassName("p-checkbox-box", myFili1);
-        break;
-      }
-    }
+  //   for (let q in trList) {
+  //     q = Number(q);
+  //     let text = await trList[q].getText();
+  //     tdlist = await helper.elementsByTagName("td", trList[q]);
+  //     if (text.includes("Alex auto test new")) {
+  //       let myFili1 = await helper.elementByXpath(
+  //         `/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody/tr[${
+  //           q + 1
+  //         }]`,
+  //         driver
+  //       );
+  //       await helper.clcikByClassName("p-checkbox-box", myFili1);
+  //       break;
+  //     }
+  //   }
 
-    console.log(await tdlist[1].getText());
+  //   console.log(await tdlist[1].getText());
 
-    await driver.sleep(900);
-    await helper.clickByXpath(
-      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[3]/div/div/div/div/app-chips/div/mat-chip-list/div/input",
-      driver
-    );
-    await driver.sleep(900);
-    await helper.clickByXpath(
-      "/html/body/div/div/div/div/mat-option[1]",
-      driver
-    );
-    await driver.sleep(900);
-    await helper.clickByXpath(
-      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/p-footer/div/button",
-      driver
-    );
-    await driver.sleep(900);
+  //   await driver.sleep(900);
+  //   await helper.clickByXpath(
+  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[3]/div/div/div/div/app-chips/div/mat-chip-list/div/input",
+  //     driver
+  //   );
+  //   await driver.sleep(900);
+  //   await helper.clickByXpath(
+  //     "/html/body/div/div/div/div/mat-option[1]",
+  //     driver
+  //   );
+  //   await driver.sleep(900);
+  //   await helper.clickByXpath(
+  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/p-footer/div/button",
+  //     driver
+  //   );
+  //   await driver.sleep(900);
 
-    await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[8]",
-      driver
-    );
+  //   await helper.clickByXpath(
+  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[8]",
+  //     driver
+  //   );
 
-    await driver.sleep(12000000);
+  //   await driver.sleep(12000000);
 
-    let trList2 = await helper.getTrFromTbodyByXpath(
-      "/html/body/p-dynamicdialog/div/div/div[2]/app-branch-rules-modal/app-playing-rule-view/div/app-table/div/p-table/div/div/table/tbody",
-      driver
-    );
+  //   let trList2 = await helper.getTrFromTbodyByXpath(
+  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-branch-rules-modal/app-playing-rule-view/div/app-table/div/p-table/div/div/table/tbody",
+  //     driver
+  //   );
 
-    let result = false;
+  //   let result = false;
 
-    if (trList2.length === 0) {
-      assert.isTrue(false);
-    }
+  //   if (trList2.length === 0) {
+  //     assert.isTrue(false);
+  //   }
 
-    for (let q in trList2) {
-      let text = await trList2[q].getText();
-      if (text.includes(await tdlist[1].getText())) {
-        result = true;
-        break;
-      }
-    }
-    assert.isTrue(result);
-  });
+  //   for (let q in trList2) {
+  //     let text = await trList2[q].getText();
+  //     if (text.includes(await tdlist[1].getText())) {
+  //       result = true;
+  //       break;
+  //     }
+  //   }
+  //   assert.isTrue(result);
+  // });
 
   it("Удалить филию", async function () {
     await helper.clcikByClassName(

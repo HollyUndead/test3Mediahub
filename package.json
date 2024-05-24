@@ -11,7 +11,7 @@
     "fs": "^0.0.1-security",
     "mocha": "^10.4.0",
     "mocha-junit-reporter": "^2.2.1",
-    "selenium-webdriver": "^4.19.0",
+    "selenium-webdriver": "^4.21.0",
     "spellchecker": "^3.7.1"
   },
   "repository": {
