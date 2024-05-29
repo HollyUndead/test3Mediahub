@@ -23,18 +23,7 @@ describe("Библиотека", function () {
       .setChromeOptions(options)
       .build();
   });
-  afterEach(async function () {
-    if (this.currentTest.state === "failed") {
-      const screenshot = await driver.takeScreenshot();
-      console.error(this.currentTest.err);
 
-      const fileName = `./screen/${Date.now()} failure-screenshot-${
-        this.currentTest.title
-      }.png`;
-      fs.writeFileSync(fileName, screenshot, "base64");
-      console.log(`Screenshot saved as: ${fileName}`);
-    }
-  });
   after(async function () {
     logStream.end();
     driver.quit();
@@ -80,39 +69,53 @@ describe("Библиотека", function () {
     assert.equal(title, "Mediafront", "Не открыло страницу");
   });
 
-  // it("Библиотека", async function () {
-  //   let ul = await helper.elementByXpath(
-  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
-  //     driver
-  //   );
+  it("Библиотека", async function () {
+    let ul = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
+      driver
+    );
 
-  //   let lilist = await helper.elementsByTagName("li", ul);
+    let lilist = await helper.elementsByTagName("li", ul);
 
-  //   for (let q in lilist) {
-  //     let text = await lilist[q].getText();
-  //     if (text.includes("Audio")) {
-  //       lilist[q].click();
-  //       break;
-  //     }
-  //   }
+    for (let q in lilist) {
+      let text = await lilist[q].getText();
+      if (text.includes("Audio")) {
+        lilist[q].click();
+        break;
+      }
+    }
 
-  //   let theadXpath =
-  //       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/thead",
-  //     tbodyXpath =
-  //       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody";
+    await driver.sleep(900);
 
-  //   let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody";
 
-  //   let res = finalRes.every((el) => el === true);
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
 
-  //   assert.isTrue(res);
-  // });
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
 
   it("Филии", async function () {
     await helper.clickByXpath(
       "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[2]/div",
       driver
     );
+
+    await driver.sleep(900);
 
     let theadXpath =
         "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[1]/div/table/thead",
@@ -121,20 +124,223 @@ describe("Библиотека", function () {
 
     let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
 
-    console.log(finalRes);
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
   });
 
-  //   it("Плейлисты", async function () {});
+  it("Плейлисты", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[3]/div/a",
+      driver
+    );
 
-  //   it("Правила", async function () {});
+    await driver.sleep(900);
 
-  //   it("Настройки приложения", async function () {});
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody";
 
-  //   it("Настройки MediaHub", async function () {});
+    let finalRes1 = await checkSort(theadXpath, tbodyXpath, driver, helper);
 
-  //   it("Владелец", async function () {});
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[1]/div/div/app-play-list-view/app-table/div/p-table/div/div/table/tbody/tr[1]",
+      driver
+    );
 
-  //   it("Группы филии", async function () {});
+    await driver.sleep(900);
+
+    theadXpath =
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[3]/div/div/app-playlist-records-view/app-table/div/p-table/div/div/table/thead";
+
+    tbodyXpath =
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playlist-with-records-view/div/p-splitter/div/div[3]/div/div/app-playlist-records-view/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let res = finalRes.filter((el) => el.result === false);
+    let res1 = finalRes1.filter((el) => el.result === false);
+
+    let result = true,
+      text = `\n`;
+
+    if (res.length !== 0) {
+      result = false;
+      res.forEach((el) => {
+        text += `${el.name} ${el.msg}`;
+      });
+    }
+
+    if (res1.length !== 0) {
+      result = false;
+      res1.forEach((el) => {
+        text += `${el.name} ${el.msg}`;
+      });
+    }
+
+    assert.isTrue(result, `${text}`);
+  });
+
+  it("Правила", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[4]/div/a",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playing-rule-view/div/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-playing-rule-view/div/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
+
+  it("Настройки приложения", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[6]/div/a",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-settings-app-view/div/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-settings-app-view/div/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
+
+  it("Настройки MediaHub", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[7]/div/a",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-media-box-settings-view/div/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-media-box-settings-view/div/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
+
+  it("Владелец", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[8]/div/a",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-customers-view/div/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-customers-view/div/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
+
+  it("Группы филии", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[1]/div/div[2]/app-menu/div/p-panelmenu/div/div[9]/div/a",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let theadXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branch-group-view/div/app-table/div/p-table/div/div/table/thead",
+      tbodyXpath =
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branch-group-view/div/app-table/div/p-table/div/div/table/tbody";
+
+    let finalRes = await checkSort(theadXpath, tbodyXpath, driver, helper);
+
+    let result = finalRes.filter((el) => el.result === false);
+
+    let text = "\n",
+      res = true;
+
+    if (result.length !== 0) {
+      res = false;
+      result.forEach((el) => {
+        text += `${el.name} ${el.msg} \n`;
+      });
+    }
+
+    assert.isTrue(res, `${text}`);
+  });
 });
 
 function splitTextAndNumbers(str) {

@@ -4,9 +4,10 @@ const { describe, before, after, it } = require("mocha");
 const assert = require("chai").assert;
 const Helper = require("../helpers/helper");
 const fs = require("fs");
+const { runInContext } = require("vm");
 
 describe("Библиотека", function () {
-  let driver;
+  let driver, fileName;
   By = webdriver.By;
   until = webdriver.until;
   const baseUrl = "http://192.168.16.14:6521/login";
@@ -192,7 +193,7 @@ describe("Библиотека", function () {
     assert.isTrue(result);
   });
 
-  it("Скопировать файл в папку", async function () {
+  it("Скопировать и отредактировать файл в папку", async function () {
     let ul = await helper.elementByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
       driver
@@ -215,7 +216,7 @@ describe("Библиотека", function () {
     );
     await file.click();
     let tdlist = await helper.elementsByTagName("td", file);
-    let fileName = await tdlist[1].getText();
+    fileName = await tdlist[1].getText();
     fileName = fileName.slice(0, -4);
     await driver.sleep(900);
     await helper.clickByXpath(
@@ -240,6 +241,8 @@ describe("Библиотека", function () {
     }
 
     await driver.sleep(900);
+
+    await driver.sleep(900);
     await helper.clickByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/div[1]/p-button[5]",
       driver
@@ -258,11 +261,135 @@ describe("Библиотека", function () {
       let text = await trlist[q].getText();
       if (text.includes(fileName)) {
         result = true;
+        let tdlist = await helper.elementsByTagName("td", trlist[q]);
+        await tdlist[0].click();
+        await driver.sleep(900);
+        await helper.clickByXpath(
+          "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/div[1]/p-button[2]",
+          driver
+        );
+        await driver.sleep(900);
+        let input = await helper.elementByXpath(
+          "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/div/div[1]/span/input",
+          driver
+        );
+
+        let inputText = await input.getAttribute("value");
+
+        let lastDot = inputText.lastIndexOf(".");
+
+        let fileType = inputText.slice(lastDot);
+
+        await input.clear();
+
+        fileName = `Auto test file${fileType}`;
+
+        await input.sendKeys(fileName);
+
+        await helper.clickByXpath(
+          "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/p-footer/div/div/p-button/button",
+          driver
+        );
+
         break;
       }
     }
 
-    assert.isTrue(result);
+    await driver.sleep(1200);
+
+    trlist = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    let secondRes = false;
+
+    for (let q in trlist) {
+      let text = await trlist[q].getText();
+      if (text.includes(fileName)) {
+        secondRes = true;
+      }
+    }
+    let msg = "";
+
+    if (result === false) {
+      msg = "Файл не скпировался";
+      assert.isTrue(false, msg);
+    }
+    if (secondRes === false) {
+      msg = "Файл не переименновался";
+      assert.isTrue(false, msg);
+    }
+
+    assert.isTrue(true);
+  });
+
+  it("Редактирование кнопкой в елементе", async function () {
+    let trlist = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    for (let q in trlist) {
+      let text = await trlist[q].getText();
+      // if (text === fileName) {
+      let edit = await helper.elementByClassName(
+        "table_icon _edit ng-star-inserted",
+        trlist[q]
+      );
+      await edit.click();
+      break;
+      // }
+    }
+
+    await driver.sleep(900);
+
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/div/div[3]/app-chips/div/mat-chip-list/div/input",
+      driver,
+      "AutoTest"
+    );
+
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/div/div[3]/app-chips/div/mat-chip-list/div/input",
+      driver,
+      webdriver.Key.ENTER
+    );
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/div/div[1]/span/input",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-mdeia-content-edit-modal/p-footer/div/div/p-button/button",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    trlist = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    let result = false;
+
+    for (let q in trlist) {
+      let text = await trlist[q].getText();
+      let tdlist = await helper.elementsByTagName("td", trlist[q]);
+      if ((await tdlist[4].getText()) === "AutoTest") {
+        result = true;
+      }
+      break;
+    }
+
+    assert.isTrue(
+      result,
+      "Изменение кнопкой из строки  елемента не выполнилась"
+    );
   });
 
   it("Удалить файл из папки", async function () {
@@ -538,7 +665,7 @@ describe("Библиотека", function () {
     );
     await file.click();
     let tdlist = await helper.elementsByTagName("td", file);
-    let fileName = await tdlist[1].getText();
+    fileName = await tdlist[1].getText();
     fileName = fileName.slice(0, -4);
     await driver.sleep(900);
     await helper.clickByXpath(
@@ -709,7 +836,136 @@ describe("Библиотека", function () {
     assert.isTrue(true);
   });
 
-  it("Проверка сортировки по полям", async function () {
-    // await helper.clickByXpath("", driver);
+  it("Проверка смены темы", async function () {
+    let body = await helper.elementByTagName("body", driver);
+
+    let theme = await body.getAttribute("class");
+
+    let btn = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[1]/div[2]/div[2]/button/i",
+      driver
+    );
+
+    let className = await btn.getAttribute("class");
+
+    if (className.includes("pi-moon") && theme === "light-theme") {
+      await driver.executeScript("arguments[0].click();", btn);
+    }
+    await driver.executeScript("arguments[0].click();", btn);
+
+    await driver.sleep(900);
+
+    body = await helper.elementByTagName("body", driver);
+
+    let theme1 = await body.getAttribute("class");
+
+    if (theme === theme1) {
+      assert.isTrue(false, "Смены темы не произошло");
+    } else {
+      assert.isTrue(true);
+    }
+  });
+
+  it("Проверка смены колво елементов на странцие", async function () {
+    let ul = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[1]/div/div/p-tree/div/div/ul/p-treenode/li/ul",
+      driver
+    );
+
+    let lilist = await helper.elementsByTagName("li", ul);
+
+    for (let q in lilist) {
+      let text = await lilist[q].getText();
+      if (text.includes("AutoTestAmountOnPage")) {
+        lilist[q].click();
+        break;
+      }
+    }
+
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    let numberCurentMax = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/p-paginator/div/div/p-dropdown",
+      driver
+    );
+
+    if (Number(await numberCurentMax.getText()) > 10) {
+      await numberCurentMax.click();
+
+      await driver.sleep(400);
+
+      await helper.clickByXpath(
+        "/html/body/div[2]/div/div/div/ul/p-dropdownitem[1]",
+        driver
+      );
+    }
+
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    numberCurentMax = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/p-paginator/div/div/p-dropdown",
+      driver
+    );
+
+    if (trList.length !== Number(await numberCurentMax.getText())) {
+      assert.isTrue(false, "Слишком мало елементов в папке");
+    }
+
+    await numberCurentMax.click();
+
+    await driver.sleep(900);
+
+    ul = await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath("/html/body/div[3]/div/div/div/ul")
+      ),
+      5000
+    );
+
+    let li = await helper.elementsByTagName("li", ul);
+    for (let q in li) {
+      let text = await li[q].getText();
+      if (Number(text) === 100) {
+        await li[q].click();
+      }
+    }
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    numberCurentMax = await helper.elementByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-library/div/p-splitter/div/div[3]/div/div/app-media-conntent-view/app-table/div/p-table/div/p-paginator/div/div/p-dropdown",
+      driver
+    );
+
+    if (
+      trList.length !== Number(await numberCurentMax.getText()) &&
+      trList.length < 25
+    ) {
+      assert.isTrue(false, "На странице мало елементов");
+    }
+
+    if (
+      trList.length > 25 &&
+      trList.length !== Number(await numberCurentMax.getText())
+    ) {
+      assert.isTrue(
+        false,
+        "Не сработало изменение колва на странице либо мало елементов в папке"
+      );
+    }
+
+    assert.isTrue(true);
   });
 });

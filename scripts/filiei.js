@@ -271,23 +271,48 @@ describe("Филии", function () {
     assert.isTrue(result);
   });
 
-  it("Просмотреть плейлисты", async function () {
+  it("Добавить правила на филию", async function () {
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[7]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/div/app-chips/div/mat-chip-list/div/input",
+      driver,
+      "Тестове"
+    );
+
+    await driver.sleep(400);
+
+    await helper.clickByXpath("/html/body/div/div/div/div/mat-option", driver);
+
+    await driver.sleep(900);
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/p-footer/div/button",
+      driver
+    );
+
+    await driver.sleep(900);
+
     await helper.clickByXpath(
       "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[6]",
       driver
     );
 
-    await driver.wait(
-      webdriver.until.elementLocated(webdriver.By.tagName("p-toastitem")),
-      7000
-    );
+    await driver.sleep(900);
+
+    let taskList = await helper.elementsByClassName("sg-task-content", driver);
 
     await helper.clickByXpath(
       "/html/body/p-dynamicdialog/div/div/div[1]/div/button",
       driver
     );
 
-    assert.isTrue(true);
+    assert.isNotEmpty(taskList, "Правило не применилось");
   });
 
   it("Проврка фильтров", async function () {
@@ -523,6 +548,11 @@ describe("Филии", function () {
 
     await driver.sleep(900);
 
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-sidebar/div/div[1]/button",
+      driver
+    );
+
     let result = res.every((el) => el.state === true);
 
     let ar,
@@ -544,117 +574,288 @@ describe("Филии", function () {
     assert.isTrue(result, erStr);
   });
 
-  it("Скопировать филию", async function () {
-    await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[3]",
-      driver
-    );
-    await driver.sleep(900);
-
-    let notification;
-    try {
-      notification = await helper.elementByXpath(
-        "/html/body/app-root/p-toast/div/p-toastitem/div/div",
-        driver
-      );
-    } catch (err) {}
-
-    if (notification === undefined) {
-      assert.isTrue(true);
-    }
-
-    assert.isTrue(false);
-  });
-
-  // it("Назначить правило и проверка", async function () {
+  // it("Скопировать филию", async function () {
   //   await helper.clickByXpath(
-  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[7]",
+  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[3]",
   //     driver
   //   );
   //   await driver.sleep(900);
-  //   let trList = await helper.getTrFromTbodyByXpath(
-  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
-  //     driver
-  //   );
 
-  //   let tdlist;
+  //   let notification;
+  //   try {
+  //     notification = await helper.elementByXpath(
+  //       "/html/body/app-root/p-toast/div/p-toastitem/div/div",
+  //       driver
+  //     );
+  //   } catch (err) {}
 
-  //   for (let q in trList) {
-  //     q = Number(q);
-  //     let text = await trList[q].getText();
-  //     tdlist = await helper.elementsByTagName("td", trList[q]);
-  //     if (text.includes("Alex auto test new")) {
-  //       let myFili1 = await helper.elementByXpath(
-  //         `/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[1]/div/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody/tr[${
-  //           q + 1
-  //         }]`,
-  //         driver
-  //       );
-  //       await helper.clcikByClassName("p-checkbox-box", myFili1);
-  //       break;
-  //     }
+  //   if (notification === undefined) {
+  //     assert.isTrue(true);
   //   }
 
-  //   console.log(await tdlist[1].getText());
-
-  //   await driver.sleep(900);
-  //   await helper.clickByXpath(
-  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/p-splitter/div/div[3]/div/div/div/div/app-chips/div/mat-chip-list/div/input",
-  //     driver
-  //   );
-  //   await driver.sleep(900);
-  //   await helper.clickByXpath(
-  //     "/html/body/div/div/div/div/mat-option[1]",
-  //     driver
-  //   );
-  //   await driver.sleep(900);
-  //   await helper.clickByXpath(
-  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/p-footer/div/button",
-  //     driver
-  //   );
-  //   await driver.sleep(900);
-
-  //   await helper.clickByXpath(
-  //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[8]",
-  //     driver
-  //   );
-
-  //   await driver.sleep(12000000);
-
-  //   let trList2 = await helper.getTrFromTbodyByXpath(
-  //     "/html/body/p-dynamicdialog/div/div/div[2]/app-branch-rules-modal/app-playing-rule-view/div/app-table/div/p-table/div/div/table/tbody",
-  //     driver
-  //   );
-
-  //   let result = false;
-
-  //   if (trList2.length === 0) {
-  //     assert.isTrue(false);
-  //   }
-
-  //   for (let q in trList2) {
-  //     let text = await trList2[q].getText();
-  //     if (text.includes(await tdlist[1].getText())) {
-  //       result = true;
-  //       break;
-  //     }
-  //   }
-  //   assert.isTrue(result);
+  //   assert.isTrue(false);
   // });
 
-  it("Удалить филию", async function () {
-    await helper.clcikByClassName(
-      "table_icon _delete ng-star-inserted",
-      myFili
+  it("Проверка настрйки медибокс", async function () {
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      if ((await tdList[2].getText()).includes("Alex auto test new")) {
+        let trlist = await helper.getTrFromTbodyByXpath(
+          "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody",
+          driver
+        );
+        let settingssBtn = await helper.elementByClassName(
+          "p-ripple",
+          trlist[q]
+        );
+        await settingssBtn.click();
+      }
+    }
+
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      if ((await tdList[2].getText()) === "Test mediabox") {
+        let trlist = await helper.getTrFromTbodyByXpath(
+          "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody",
+          driver
+        );
+        let settingssBtn = await helper.elementByClassName(
+          "_settings",
+          trlist[q]
+        );
+        await settingssBtn.click();
+      }
+    }
+
+    await driver.sleep(900);
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-setting-value-modal/app-media-box-setting-value-view/div/app-table/div/p-table/div/div/table/tbody/tr[6]/td[4]/div/button[1]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    let input = await helper.elementByXpath(
+      "/html/body/p-dynamicdialog[2]/div/div/div[2]/app-media-box-setting-value-edit-modal/div/div[3]/span/input",
+      driver
+    );
+
+    await input.clear();
+
+    await input.sendKeys("12:30");
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog[2]/div/div/div[2]/app-media-box-setting-value-edit-modal/p-footer/div/div/p-button/button",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    trList = await await helper.getTrFromTbodyByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-setting-value-modal/app-media-box-setting-value-view/div/app-table/div/p-table/div/div/table/tbody",
+      driver
+    );
+
+    let res = true;
+
+    for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      let text = await tdList[0].getText();
+      if (text.includes("")) {
+        res = (await tdList[2].getText()) === "12:30";
+      }
+    }
+
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[1]/div/button",
+      driver
+    );
+
+    assert.isTrue(res, "Настройки медиабокса не поменялись");
+  });
+
+  it("Применение правила на все филии", async function () {
+    let trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+    for (let q in trList) {
+      let trlist = await helper.getTrFromTbodyByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody",
+        driver
+      );
+      if ((await trList[q].getText()).includes("Branch 10001")) {
+        continue;
+      }
+      let checkbox = await helper.elementByTagName(
+        "p-treetablecheckbox",
+        trlist[q]
+      );
+      await checkbox.click();
+    }
+
+    await helper.clickByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[7]",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    await helper.sendKeysByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/div/div/app-chips/div/mat-chip-list/div/input",
+      driver,
+      "Тестове"
     );
 
     await driver.sleep(900);
 
     await helper.clickByXpath(
-      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-confirmdialog/div/div/div[3]/button[2]",
+      "/html/body/div/div/div/div/mat-option[1]",
       driver
     );
 
+    await helper.clickByXpath(
+      "/html/body/p-dynamicdialog/div/div/div[2]/app-media-box-add-rule-modal/p-footer/div/button",
+      driver
+    );
+
+    await driver.sleep(900);
+
+    await driver.navigate().refresh();
+
+    await driver.wait(
+      webdriver.until.elementLocated(
+        webdriver.By.xpath(
+          "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table"
+        )
+      )
+    );
+    // trList = await helper.getTrFromTbodyByXpath(
+    //   "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+    //   driver
+    // );
+    // console.log(trList.length);
+    // for (let q in trList) {
+    //   let trlist = await helper.getTrFromTbodyByXpath(
+    //     "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody",
+    //     driver
+    //   );
+    //   if (
+    //     (await trList[q].getText()).includes("Branch 10001") ||
+    //     (await trList[q].getText()).includes("Test mediabox")
+    //   ) {
+    //     continue;
+    //   } else {
+    //     try {
+    //       let checkbox = await helper.elementByTagName(
+    //         "p-treetablecheckbox",
+    //         trlist[q]
+    //       );
+    //       await checkbox.click();
+    //     } catch (err) {
+    //       console.log(err, "some error");
+    //     }
+    //     console.log(await trlist[q].getAttribute("innerHTML"));
+    //   }
+    // }
+
+    await driver.sleep(900);
+
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+    trList = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+    let res = [];
+    let msg = "";
+    for (let q in trList) {
+      let tdList = await helper.elementsByTagName("td", trList[q]);
+      let text = await tdList[2].getText();
+      if (text.includes("Branch 10001") || text.includes("Test mediabox")) {
+        continue;
+      }
+      await trList[q].click();
+      await helper.clickByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/div/p-button[6]",
+        driver
+      );
+
+      await driver.sleep(900);
+
+      let taskList = await helper.elementsByClassName("sg-task", driver);
+
+      await helper.clickByXpath(
+        "/html/body/p-dynamicdialog/div/div/div[1]/div/button",
+        driver
+      );
+
+      let res1 = taskList.length !== 0;
+
+      if (res1 === false) {
+        msg += `\nНе принял првило ${text}`;
+      }
+      res.push(res1);
+    }
+
+    let finalRes = res.every((el) => el === true);
+
+    assert.isTrue(finalRes, msg);
+  });
+
+  it("Удалить филию", async function () {
+    let trlist = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[2]/div[2]/table/tbody",
+      driver
+    );
+
+    let trlist1 = await helper.getTrFromTbodyByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/div/app-tree-table/div/p-treetable/div/div/div[1]/div[2]/table/tbody",
+      driver
+    );
+
+    for (let q in trlist) {
+      let text = await trlist[q].getText();
+      if (text.includes("Alex auto test new")) {
+        let deleteBtn = await helper.elementsByTagName("button", trlist1[q]);
+        for (let t in deleteBtn) {
+          let className = await deleteBtn[t].getAttribute("class");
+          if (className.includes("_delete")) {
+            await deleteBtn[t].click();
+          }
+        }
+      }
+    }
+
+    let nameDeleEle = await helper.textByXpath(
+      "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-confirmdialog/div/div/div[2]/span",
+      driver
+    );
+
+    await driver.sleep(900);
+    if (nameDeleEle.includes("Alex auto test new")) {
+      await helper.clickByXpath(
+        "/html/body/app-root/app-app-view/div/div[2]/div[2]/div/app-branches-view/p-confirmdialog/div/div/div[3]/button[2]",
+        driver
+      );
+    } else {
+      assert.isTrue(false, "Удаление не того елемента");
+    }
     await driver.sleep(900);
 
     let trList = await helper.getTrFromTbodyByXpath(
@@ -664,7 +865,7 @@ describe("Филии", function () {
 
     for (let q in trList) {
       let text = await trList[q].getText();
-      if (text.includes("")) {
+      if (text.includes("Alex auto test new")) {
         assert.isTrue(false);
       }
     }

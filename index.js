@@ -7,14 +7,11 @@ if (fs.existsSync("test_results.log")) {
 }
 const logStream = fs.createWriteStream("test_results.log", { flags: "a" });
 
+mocha.addFile("./scripts/library.js");
 // mocha.addFile("./scripts/libraryFilter.js");
-// mocha.addFile("./scripts/library.js");
-
-mocha.addFile("./scripts/sortCheck.js");
-
-// mocha.addFile("./scripts/filiei.js");
 // mocha.addFile("./scripts/playlist.js");
-
+// mocha.addFile("./scripts/filiei.js");
+// mocha.addFile("./scripts/sortCheck.js");
 // mocha.addFile("./scripts/report.js");
 // mocha.addFile("./scripts/owners.js");
 // mocha.addFile("./scripts/fili_group.js");
